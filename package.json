@@ -2,6 +2,11 @@
   "name": "puente-laboral",
   "version": "0.1.0",
   "private": true,
-  "description": "Etapa 1: buscador de empleo en Costa Rica (prueba de conexión con la API)",
-  "engines": { "node": ">=18" }
+  "description": "Puente Laboral: buscador de empleo en Costa Rica + bolsa de la iglesia",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@vercel/blob": "2.8.2"
+  }
 }
