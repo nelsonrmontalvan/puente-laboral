@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E7C86">
+<title>Puente Laboral · Empleo en Costa Rica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-canvas: #F1F3F1;
+    --bg-card: #FFFFFF;
+    --bg-card-soft: #F7F8F7;
+    --text-primary: #1A1D1B;
+    --text-secondary: #6F7875;
+    --text-tertiary: #B8BEBC;
+    --border-subtle: #E8EBE9;
+    --accent-500: #0E7C86;
+    --accent-600: #0B6B74;
+    --accent-700: #0A5C63;
+    --accent-100: #E0F2F3;
+    --accent-contrast: #FFFFFF;
+    --warn-100: #FFF4DB;
+    --warn-700: #8A5A00;
+    --radius-card: 20px;
+    --radius-element: 12px;
+    --radius-pill: 999px;
+    --shadow-card: 0 1px 3px rgba(20,30,25,.04), 0 8px 24px rgba(20,30,25,.05);
+    --ease: cubic-bezier(.22,.61,.36,1);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-canvas);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent-500); outline-offset: 2px; border-radius: 8px; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- Encabezado ---------- */
+  header.top {
+    padding: calc(14px + env(safe-area-inset-top, 0px)) 0 10px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 38px; height: 38px; border-radius: 12px;
+    background: var(--accent-500); display: grid; place-items: center;
+  }
+  .brand-name { font-weight: 800; font-size: 17px; letter-spacing: -.01em; line-height: 1.1; }
+  .brand-sub { font-size: 12.5px; color: var(--text-secondary); }
+
+  /* ---------- Tarjeta de búsqueda (la única con acento sólido) ---------- */
+  .search-card {
+    margin-top: 10px;
+    background: var(--accent-500);
+    color: var(--accent-contrast);
+    border-radius: 24px;
+    padding: 22px 18px 18px;
+    position: relative;
+    overflow: hidden;
+    overflow: clip; /* evita que el círculo decorativo desplace el contenido al enfocar */
+    animation: fadeUp .7s var(--ease) backwards;
+  }
+  .search-card::after {
+    content: ""; position: absolute; right: -60px; top: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    border: 28px solid rgba(255,255,255,.07);
+    pointer-events: none;
+  }
+  .search-card h1 { font-size: clamp(24px, 6vw, 34px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; max-width: 20ch; }
+  .search-card p.lead { margin-top: 6px; font-size: 14.5px; opacity: .85; max-width: 46ch; }
+
+  form.search {
+    margin-top: 16px;
+    display: flex; gap: 8px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 6px;
+    position: relative; z-index: 1;
+  }
+  .search input {
+    flex: 1; min-width: 0;
+    border: 0; outline: 0; background: transparent;
+    padding: 10px 10px; font-size: 16px; color: var(--text-primary);
+  }
+  .search input::placeholder { color: var(--text-tertiary); }
+  .btn-primary {
+    border: 0; cursor: pointer;
+    background: var(--text-primary); color: #fff;
+    font-weight: 700; font-size: 15px;
+    padding: 0 18px; border-radius: 12px;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: transform .15s ease, background .2s ease;
+  }
+  .btn-primary:hover { background: #2B302D; }
+  .btn-primary:active { transform: scale(.97); }
+
+  .suggest { margin-top: 12px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; position: relative; z-index: 1; }
+  .suggest::-webkit-scrollbar { display: none; }
+  .suggest button {
+    flex: none; border: 0; cursor: pointer;
+    background: rgba(255,255,255,.14); color: #fff;
+    font-size: 13.5px; font-weight: 600;
+    padding: 7px 13px; border-radius: var(--radius-pill);
+    transition: background .2s ease;
+  }
+  .suggest button:hover { background: rgba(255,255,255,.24); }
+
+  /* ---------- Filtros ---------- */
+  .filters { margin-top: 16px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 2px 0 4px; }
+  .filters::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none; cursor: pointer;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card); color: var(--text-primary);
+    font-size: 13.5px; font-weight: 600;
+    padding: 8px 14px; border-radius: var(--radius-pill);
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent-100); color: var(--accent-700); border-color: transparent; }
+  .chip.toggle { display: inline-flex; align-items: center; gap: 6px; }
+  .divider { flex: none; width: 1px; background: var(--border-subtle); margin: 4px 2px; }
+
+  /* ---------- Resultados ---------- */
+  .meta { margin: 18px 2px 10px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; min-height: 28px; }
+  .meta strong { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+  .meta span { color: var(--text-secondary); font-size: 14px; }
+
+  .banner {
+    display: none; gap: 10px; align-items: flex-start;
+    background: var(--warn-100); color: var(--warn-700);
+    border-radius: 14px; padding: 12px 14px; font-size: 13.5px; margin-top: 14px;
+  }
+  .banner.show { display: flex; }
+
+  .results { display: grid; gap: 12px; grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .results { grid-template-columns: 1fr 1fr; } }
+
+  .job {
+    background: var(--bg-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+    animation: fadeUp .5s var(--ease) backwards;
+    transition: transform .25s var(--ease), box-shadow .25s ease;
+  }
+  @media (hover: hover) {
+    .job:hover { transform: translateY(-4px); box-shadow: 0 4px 8px rgba(20,30,25,.05), 0 16px 32px rgba(14,124,134,.12); }
+  }
+  .job-head { display: flex; gap: 12px; align-items: flex-start; }
+  .logo {
+    flex: none; width: 46px; height: 46px; border-radius: 50%;
+    background: var(--accent-100); color: var(--accent-700);
+    display: grid; place-items: center; font-weight: 800; font-size: 16px;
+    overflow: hidden;
+  }
+  .logo img { width: 100%; height: 100%; object-fit: contain; background: #fff; padding: 6px; }
+  .job h2 { font-size: 16px; font-weight: 700; line-height: 1.3; letter-spacing: -.005em; }
+  .company { font-size: 14px; color: var(--text-secondary); margin-top: 2px; }
+  .place { display: flex; align-items: center; gap: 5px; font-size: 13.5px; color: var(--text-secondary); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 12.5px; font-weight: 600; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--bg-card-soft); color: var(--text-secondary); }
+  .tag.accent { background: var(--accent-100); color: var(--accent-700); }
+  .apply {
+    margin-top: auto;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    text-decoration: none;
+    background: var(--accent-500); color: var(--accent-contrast);
+    font-weight: 700; font-size: 15px;
+    padding: 12px 16px; border-radius: var(--radius-element);
+    transition: background .2s ease, transform .15s ease, box-shadow .2s ease;
+  }
+  .apply:hover { background: var(--accent-600); box-shadow: 0 8px 20px rgba(14,124,134,.28); transform: translateY(-1px); }
+  .apply:active { transform: scale(.98); }
+  .apply.disabled { background: var(--bg-card-soft); color: var(--text-secondary); pointer-events: none; }
+
+  /* Esqueletos de carga */
+  .skel { background: var(--bg-card); border-radius: var(--radius-card); padding: 16px; box-shadow: var(--shadow-card); }
+  .skel i { display: block; height: 12px; border-radius: 6px; background: linear-gradient(90deg, #EEF0EE 25%, #F6F7F6 50%, #EEF0EE 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite linear; margin-bottom: 10px; }
+  .skel i:nth-child(1) { width: 70%; height: 16px; }
+  .skel i:nth-child(2) { width: 45%; }
+  .skel i:nth-child(3) { width: 30%; }
+  .skel i:nth-child(4) { width: 100%; height: 42px; border-radius: 12px; margin: 16px 0 0; }
+
+  /* Estados vacíos / error / inicio */
+  .state { text-align: center; padding: 36px 20px; background: var(--bg-card); border-radius: var(--radius-card); box-shadow: var(--shadow-card); grid-column: 1 / -1; }
+  .state .icon-chip { width: 56px; height: 56px; border-radius: 50%; background: var(--accent-100); display: grid; place-items: center; margin: 0 auto 12px; }
+  .state h3 { font-size: 17px; font-weight: 700; }
+  .state p { font-size: 14px; color: var(--text-secondary); margin-top: 4px; max-width: 40ch; margin-inline: auto; }
+
+  .more { display: none; margin: 16px auto 0; }
+  .more.show { display: flex; }
+  .btn-ghost {
+    cursor: pointer; border: 1px solid var(--border-subtle); background: var(--bg-card);
+    font-weight: 700; font-size: 14.5px; padding: 11px 22px; border-radius: var(--radius-pill);
+    transition: transform .15s ease, box-shadow .2s ease;
+  }
+  .btn-ghost:hover { box-shadow: var(--shadow-card); transform: translateY(-1px); }
+
+  footer.note {
+    margin: 28px 0 24px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start;
+    background: var(--bg-card); border-radius: 16px;
+    font-size: 13.5px; color: var(--text-secondary);
+  }
+  footer.note b { color: var(--text-primary); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  @media (min-width: 760px) {
+    .wrap { padding: 0 24px; }
+    .search-card { padding: 32px 30px 26px; }
+    form.search { max-width: 640px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17h20"/><path d="M4 17v-3a8 8 0 0 1 16 0v3"/><path d="M8 17v-4"/><path d="M12 17v-6"/><path d="M16 17v-4"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Puente Laboral</div>
+        <div class="brand-sub">Ofertas de empleo en Costa Rica</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="search-card" aria-labelledby="titulo">
+    <h1 id="titulo">¿Qué trabajo estás buscando?</h1>
+    <p class="lead">Buscamos ofertas reales en todo el país. Tocá la que te interese y aplicás directo en el anuncio.</p>
+    <form class="search" id="form" role="search">
+      <input id="q" type="search" name="q" autocomplete="off" enterkeyhint="search"
+             placeholder="Ej. cajero, bodega, chofer…" aria-label="Puesto o palabra clave" maxlength="80">
+      <button class="btn-primary" type="submit">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        Buscar
+      </button>
+    </form>
+    <div class="suggest" id="suggest" aria-label="Búsquedas comunes"></div>
+  </section>
+
+  <div class="filters" id="filters" role="group" aria-label="Filtrar por provincia"></div>
+
+  <div class="banner" id="banner" role="status">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="flex:none;margin-top:1px"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <span id="banner-text"></span>
+  </div>
+
+  <div class="meta" id="meta" aria-live="polite"></div>
+  <div class="results" id="results"></div>
+  <div class="more" id="more"><button class="btn-ghost" id="more-btn" type="button">Ver más ofertas</button></div>
+
+  <footer class="note">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E7C86" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M12 3 4 6v6c0 4.5 3.4 8.4 8 9 4.6-.6 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>
+    <span><b>Cuidate de las estafas.</b> Ninguna empresa seria cobra por darte un trabajo, una entrevista o una capacitación. Si te piden dinero o datos bancarios, no sigas.</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var PROVINCIAS = ['San José', 'Alajuela', 'Cartago', 'Heredia', 'Guanacaste', 'Puntarenas', 'Limón'];
+  var SUGERENCIAS = ['Servicio al cliente', 'Cajero', 'Bodega', 'Chofer', 'Contabilidad', 'Enfermería', 'Construcción', 'Bilingüe'];
+
+  var state = { q: '', provincia: '', remoto: false, cursor: '', siguiente: null, items: [], demo: false, cargando: false };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var resultsEl = $('results'), metaEl = $('meta'), moreEl = $('more'), bannerEl = $('banner');
+
+  // ---------- Construir chips ----------
+  SUGERENCIAS.forEach(function (s) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = s;
+    b.addEventListener('click', function () { $('q').value = s; nuevaBusqueda(); });
+    $('suggest').appendChild(b);
+  });
+
+  var filtrosEl = $('filters');
+  ['Todo el país'].concat(PROVINCIAS).forEach(function (p, i) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.textContent = p;
+    b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.dataset.provincia = i === 0 ? '' : p;
+    b.addEventListener('click', function () {
+      filtrosEl.querySelectorAll('[data-provincia]').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+      b.setAttribute('aria-pressed', 'true');
+      state.provincia = b.dataset.provincia;
+      if (state.q) nuevaBusqueda();
+    });
+    filtrosEl.appendChild(b);
+  });
+  var div = document.createElement('span'); div.className = 'divider'; filtrosEl.appendChild(div);
+  var rem = document.createElement('button');
+  rem.type = 'button'; rem.className = 'chip toggle'; rem.setAttribute('aria-pressed', 'false');
+  rem.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>Desde casa';
+  rem.addEventListener('click', function () {
+    state.remoto = !state.remoto;
+    rem.setAttribute('aria-pressed', String(state.remoto));
+    if (state.q) nuevaBusqueda();
+  });
+  filtrosEl.appendChild(rem);
+
+  // ---------- Eventos ----------
+  $('form').addEventListener('submit', function (e) { e.preventDefault(); nuevaBusqueda(); });
+  $('more-btn').addEventListener('click', function () { if (state.siguiente) { state.cursor = state.siguiente; buscar(true); } });
+
+  function nuevaBusqueda() {
+    var q = $('q').value.trim();
+    if (!q) { $('q').focus(); return; }
+    state.q = q; state.cursor = ''; state.siguiente = null; state.items = [];
+    $('q').blur(); // cierra el teclado en el celular
+    buscar(false);
+  }
+
+  // ---------- Consulta ----------
+  function buscar(append) {
+    if (state.cargando) return;
+    state.cargando = true;
+    if (!append) { mostrarEsqueletos(); metaEl.innerHTML = ''; }
+    $('more-btn').textContent = 'Cargando…';
+
+    var params = new URLSearchParams({ q: state.q });
+    if (state.cursor) params.set('cursor', state.cursor);
+    if (state.provincia) params.set('provincia', state.provincia);
+    if (state.remoto) params.set('remoto', '1');
+
+    var esLocal = location.protocol === 'file:';
+    var peticion = esLocal ? Promise.reject(new Error('archivo local')) : fetch('/api/empleos?' + params);
+
+    peticion
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (data) { return { ok: r.ok, status: r.status, data: data }; });
+      })
+      .then(function (res) {
+        if (res.ok) {
+          ocultarBanner();
+          state.demo = false;
+          state.siguiente = res.data.siguiente || null;
+          state.items = append ? state.items.concat(res.data.empleos) : res.data.empleos;
+          render(Boolean(state.siguiente));
+        } else if (res.data && res.data.error === 'SIN_LLAVE') {
+          modoDemo('Modo demostración: falta configurar la llave de la API en Vercel. Las ofertas de abajo son ejemplos.');
+        } else if (res.status === 404) {
+          modoDemo('Modo demostración: no se encontró el servidor (/api/empleos). Probalo con "vercel dev" o en Vercel.');
+        } else {
+          mostrarError((res.data && res.data.mensaje) || 'Algo falló al buscar. Probá de nuevo.');
+        }
+      })
+      .catch(function () {
+        modoDemo('Modo demostración: abriste el archivo sin servidor. Las ofertas de abajo son ejemplos para ver el diseño.');
+      })
+      .finally(function () {
+        state.cargando = false;
+        $('more-btn').textContent = 'Ver más ofertas';
+      });
+  }
+
+  // ---------- Render ----------
+  function render(hayMas) {
+    var n = state.items.length;
+    var lugar = state.provincia || 'todo el país';
+    metaEl.innerHTML = '';
+    if (n) {
+      var s = document.createElement('strong'); s.textContent = n;
+      var t = document.createElement('span');
+      t.textContent = (n === 1 ? 'oferta' : 'ofertas') + ' de “' + state.q + '” en ' + lugar + (state.remoto ? ', desde casa' : '');
+      metaEl.append(s, t);
+    }
+
+    resultsEl.innerHTML = '';
+    if (!n) {
+      resultsEl.innerHTML = estadoHTML('vacio', 'No encontramos ofertas con esa búsqueda', 'Probá con una palabra más general (por ejemplo “ventas” en vez de “ejecutivo de ventas”) o elegí “Todo el país”.');
+      moreEl.classList.remove('show');
+      return;
+    }
+
+    state.items.forEach(function (job, i) {
+      resultsEl.appendChild(tarjeta(job, i));
+    });
+    moreEl.classList.toggle('show', Boolean(hayMas) && !state.demo);
+  }
+
+  function tarjeta(job, i) {
+    var card = document.createElement('article');
+    card.className = 'job';
+    card.style.animationDelay = Math.min(i % 10, 8) * 60 + 'ms';
+
+    var head = document.createElement('div'); head.className = 'job-head';
+    var logo = document.createElement('div'); logo.className = 'logo'; logo.setAttribute('aria-hidden', 'true');
+    logo.textContent = iniciales(job.empresa);
+    if (job.logo && /^https:\/\//.test(job.logo)) {
+      var img = new Image(); img.alt = ''; img.loading = 'lazy'; img.referrerPolicy = 'no-referrer';
+      img.onload = function () { logo.textContent = ''; logo.appendChild(img); };
+      img.src = job.logo;
+    }
+    var txt = document.createElement('div');
+    var h2 = document.createElement('h2'); h2.textContent = job.titulo;
+    var comp = document.createElement('div'); comp.className = 'company'; comp.textContent = job.empresa || 'Empresa confidencial';
+    txt.append(h2, comp);
+    head.append(logo, txt);
+
+    var place = document.createElement('div'); place.className = 'place';
+    place.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+    place.append(document.createTextNode(job.ubicacion || 'Costa Rica'));
+
+    var tags = document.createElement('div'); tags.className = 'tags';
+    var hace = haceCuanto(job.fecha);
+    if (hace) tags.appendChild(tag(hace, true));
+    if (job.remoto) tags.appendChild(tag('Desde casa'));
+    if (job.tipo) tags.appendChild(tag(job.tipo));
+    if (job.fuente) tags.appendChild(tag('Vía ' + job.fuente));
+
+    var a = document.createElement('a');
+    a.className = 'apply';
+    if (state.demo || !/^https?:\/\//.test(job.url || '')) {
+      a.classList.add('disabled');
+      a.textContent = 'Oferta de ejemplo';
+    } else {
+      a.href = job.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.innerHTML = 'Ver oferta y aplicar <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>';
+      a.setAttribute('aria-label', 'Ver oferta y aplicar: ' + job.titulo + ' (se abre en otra pestaña)');
+    }
+
+    card.append(head, place);
+    if (tags.children.length) card.appendChild(tags);
+    card.appendChild(a);
+    return card;
+  }
+
+  function tag(texto, acento) {
+    var s = document.createElement('span');
+    s.className = 'tag' + (acento ? ' accent' : '');
+    s.textContent = texto;
+    return s;
+  }
+
+  function mostrarEsqueletos() {
+    moreEl.classList.remove('show');
+    resultsEl.innerHTML = '';
+    for (var i = 0; i < 4; i++) {
+      var d = document.createElement('div'); d.className = 'skel'; d.setAttribute('aria-hidden', 'true');
+      d.innerHTML = '<i></i><i></i><i></i><i></i>';
+      resultsEl.appendChild(d);
+    }
+    metaEl.innerHTML = '<span>Buscando ofertas en todo el país… puede tardar unos segundos.</span>';
+  }
+
+  function mostrarError(msg) {
+    metaEl.innerHTML = '';
+    moreEl.classList.remove('show');
+    resultsEl.innerHTML = estadoHTML('error', 'No pudimos traer las ofertas', '');
+    resultsEl.querySelector('.state p').textContent = msg;
+  }
+
+  function estadoHTML(tipo, titulo, texto) {
+    var icono = tipo === 'error'
+      ? '<path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/>'
+      : '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>';
+    return '<div class="state"><div class="icon-chip"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E7C86" stroke-width="2.2" stroke-linecap="round">' + icono + '</svg></div><h3>' + titulo + '</h3><p>' + texto + '</p></div>';
+  }
+
+  function modoDemo(msg) {
+    state.demo = true;
+    $('banner-text').textContent = msg;
+    bannerEl.classList.add('show');
+    var lugar = state.provincia || 'San José';
+    state.items = DEMO.map(function (d) {
+      return Object.assign({}, d, { titulo: d.titulo.replace('{q}', capital(state.q)), ubicacion: d.ubicacion.replace('{p}', lugar) });
+    });
+    render(false);
+  }
+  function ocultarBanner() { bannerEl.classList.remove('show'); }
+
+  // ---------- Utilidades ----------
+  function iniciales(n) {
+    if (!n) return '?';
+    var p = String(n).trim().split(/\s+/);
+    return (p[0][0] + (p[1] ? p[1][0] : '')).toUpperCase();
+  }
+  function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function haceCuanto(fecha) {
+    if (!fecha) return null;
+    var d = new Date(fecha); if (isNaN(d)) return null;
+    var dias = Math.round((Date.now() - d.getTime()) / 86400000);
+    if (dias <= 0) return 'Hoy';
+    if (dias === 1) return 'Ayer';
+    try { return new Intl.RelativeTimeFormat('es', { numeric: 'auto' }).format(-dias, 'day').replace(/^./, function (c) { return c.toUpperCase(); }); }
+    catch (e) { return 'Hace ' + dias + ' días'; }
+  }
+
+  var hoy = Date.now(), dia = 86400000;
+  var DEMO = [
+    { titulo: '{q}', empresa: 'Distribuidora Central', ubicacion: '{p}, Costa Rica', tipo: 'Tiempo completo', remoto: false, fecha: new Date(hoy).toISOString(), fuente: 'Ejemplo' },
+    { titulo: '{q} – Turno rotativo', empresa: 'Supermercados del Valle', ubicacion: '{p}, Costa Rica', tipo: 'Medio tiempo', remoto: false, fecha: new Date(hoy - dia).toISOString(), fuente: 'Ejemplo' },
+    { titulo: 'Asistente de {q}', empresa: 'Servicios Caribe', ubicacion: 'Limón, Costa Rica', tipo: 'Por contrato', remoto: false, fecha: new Date(hoy - 3 * dia).toISOString(), fuente: 'Ejemplo' },
+    { titulo: '{q} bilingüe', empresa: 'Centro de Contacto Heredia', ubicacion: 'Heredia, Costa Rica', tipo: 'Tiempo completo', remoto: true, fecha: new Date(hoy - 5 * dia).toISOString(), fuente: 'Ejemplo' }
+  ];
+
+  // Estado inicial
+  resultsEl.innerHTML = estadoHTML('inicio', 'Empezá con una búsqueda', 'Escribí un puesto o tocá una de las sugerencias. Podés filtrar por provincia o buscar trabajos desde casa.');
+})();
+</script>
+</body>
+</html>
