@@ -1,4 +1,4 @@
-# Puente Laboral · Etapa 1
+# Puente Laboral
 
 Buscador de empleo en Costa Rica. Prueba de conexión: buscar → tocar la oferta → aplicar en el anuncio original. Sin base de datos todavía.
 
@@ -32,3 +32,14 @@ vercel --prod
 - Ver los datos crudos que manda la API: `/api/empleos?q=cajero&debug=1`
 - Si abrís `index.html` con doble clic, la app entra en **modo demostración** con ofertas de ejemplo.
 - Búsquedas iguales quedan en caché del CDN 30 minutos para no gastar la cuota.
+
+## Bolsa de la iglesia (afiches)
+- `api/afiches.js` → lista, publica y quita afiches (Vercel Blob, sin base de datos)
+- `admin.html` → panel del admin en `/admin`, protegido con contraseña
+
+Configuración en Vercel:
+1. **Storage → Create → Blob**, acceso **Public**, conectado al proyecto (agrega `BLOB_READ_WRITE_TOKEN`).
+2. Variable `ADMIN_PASSWORD` con una contraseña larga.
+3. Redeploy.
+
+Enlaces directos: `/#bolsa` abre la bolsa; `/#afiche-<id>` abre un afiche (es el link que se comparte por WhatsApp).
