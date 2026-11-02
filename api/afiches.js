@@ -20,7 +20,7 @@ const MAX_BYTES = 3 * 1024 * 1024; // 3 MB (el navegador ya reduce la foto antes
 const TIPOS = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
 
 module.exports = async (req, res) => {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+     if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.BLOB_STORE_ID) {
     return res.status(500).json({ error: 'SIN_ALMACEN', mensaje: 'Falta conectar el almacenamiento (Blob) al proyecto en Vercel.' });
   }
 
