@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E7C86">
+<title>Admin · Puente Laboral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-canvas: #F1F3F1; --bg-card: #FFFFFF; --bg-card-soft: #F7F8F7;
+    --text-primary: #1A1D1B; --text-secondary: #6F7875; --text-tertiary: #B8BEBC;
+    --border-subtle: #E8EBE9;
+    --accent-500: #0E7C86; --accent-600: #0B6B74; --accent-700: #0A5C63; --accent-100: #E0F2F3;
+    --danger: #D93636; --danger-100: #FDECEC;
+    --radius-card: 20px; --radius-element: 12px; --radius-pill: 999px;
+    --shadow-card: 0 1px 3px rgba(20,30,25,.04), 0 8px 24px rgba(20,30,25,.05);
+    --ease: cubic-bezier(.22,.61,.36,1);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-canvas); color: var(--text-primary); line-height: 1.5; min-height: 100vh;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent-500); outline-offset: 2px; border-radius: 8px; }
+  [hidden] { display: none !important; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+
+  header.top { padding: calc(14px + env(safe-area-inset-top, 0px)) 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+  .brand-mark { width: 38px; height: 38px; border-radius: 12px; background: var(--accent-500); display: grid; place-items: center; }
+  .brand-name { font-weight: 800; font-size: 17px; line-height: 1.1; }
+  .brand-sub { font-size: 12.5px; color: var(--text-secondary); }
+  .link-btn { border: 0; background: none; cursor: pointer; font-weight: 700; font-size: 14px; color: var(--text-secondary); padding: 8px; }
+  .link-btn:hover { color: var(--text-primary); }
+
+  .card { background: var(--bg-card); border-radius: 24px; box-shadow: var(--shadow-card); padding: 22px 18px; animation: fadeUp .5s var(--ease) backwards; }
+  .card h1 { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
+  .card h2 { font-size: 18px; font-weight: 800; letter-spacing: -.01em; }
+  .card p.sub { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+
+  label.field { display: block; margin-top: 16px; }
+  label.field span { display: block; font-size: 13.5px; font-weight: 700; margin-bottom: 6px; }
+  .input, .select {
+    width: 100%; border: 1px solid var(--border-subtle); background: var(--bg-card-soft);
+    border-radius: var(--radius-element); padding: 12px 14px; font-size: 16px; outline: 0;
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .input:focus, .select:focus { border-color: var(--accent-500); background: #fff; }
+
+  .btn {
+    border: 0; cursor: pointer; width: 100%; margin-top: 18px;
+    background: var(--accent-500); color: #fff; font-weight: 700; font-size: 15.5px;
+    padding: 14px 16px; border-radius: var(--radius-element);
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background .2s ease, transform .15s ease, box-shadow .2s ease;
+  }
+  .btn:hover { background: var(--accent-600); box-shadow: 0 8px 20px rgba(14,124,134,.28); }
+  .btn:active { transform: scale(.98); }
+  .btn[disabled] { opacity: .6; pointer-events: none; }
+
+  .msg { margin-top: 12px; font-size: 14px; border-radius: 12px; padding: 10px 12px; }
+  .msg.error { background: var(--danger-100); color: #9A2020; }
+  .msg.ok { background: var(--accent-100); color: var(--accent-700); }
+
+  /* Zona de imagen */
+  .drop {
+    margin-top: 16px; display: grid; place-items: center; text-align: center; cursor: pointer;
+    border: 2px dashed #CDD4D0; border-radius: var(--radius-card); background: var(--bg-card-soft);
+    min-height: 210px; padding: 20px; position: relative; overflow: hidden;
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .drop:hover, .drop.over { border-color: var(--accent-500); background: var(--accent-100); }
+  .drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .drop .icon-chip { width: 56px; height: 56px; border-radius: 50%; background: var(--accent-100); display: grid; place-items: center; margin: 0 auto 10px; }
+  .drop strong { display: block; font-size: 15px; }
+  .drop small { color: var(--text-secondary); font-size: 13px; }
+  .drop img { max-width: 100%; max-height: 380px; border-radius: 12px; display: block; }
+  .drop.has-img { border-style: solid; padding: 10px; }
+  .row { display: grid; gap: 0 12px; }
+  @media (min-width: 640px) { .row { grid-template-columns: 2fr 1fr; } }
+
+  /* Lista */
+  .list-head { display: flex; align-items: baseline; gap: 8px; margin: 26px 2px 12px; }
+  .list-head strong { font-size: 26px; font-weight: 800; }
+  .list-head span { color: var(--text-secondary); font-size: 14px; }
+  .grid { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+  @media (min-width: 640px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  .item { background: var(--bg-card); border-radius: 18px; box-shadow: var(--shadow-card); overflow: hidden; display: flex; flex-direction: column; animation: fadeUp .4s var(--ease) backwards; }
+  .item img { width: 100%; aspect-ratio: 4/5; object-fit: cover; background: var(--bg-card-soft); display: block; }
+  .item .body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .item h3 { font-size: 14px; font-weight: 700; line-height: 1.3; }
+  .item small { color: var(--text-secondary); font-size: 12.5px; }
+  .btn-quitar {
+    margin-top: auto; border: 0; cursor: pointer; background: var(--danger-100); color: #9A2020;
+    font-weight: 700; font-size: 13.5px; padding: 9px; border-radius: 10px;
+    transition: background .2s ease;
+  }
+  .btn-quitar:hover { background: #F9D6D6; }
+  .empty { grid-column: 1 / -1; text-align: center; color: var(--text-secondary); font-size: 14px; padding: 28px 12px; background: var(--bg-card); border-radius: 18px; }
+
+  .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="/" title="Ir a la app">
+      <div class="brand-mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17h20"/><path d="M4 17v-3a8 8 0 0 1 16 0v3"/><path d="M8 17v-4"/><path d="M12 17v-6"/><path d="M16 17v-4"/></svg>
+      </div>
+      <div><div class="brand-name">Puente Laboral</div><div class="brand-sub">Administración de la bolsa</div></div>
+    </a>
+    <button class="link-btn" id="salir" type="button" hidden>Cerrar sesión</button>
+  </header>
+
+  <!-- Entrada -->
+  <section class="card" id="login">
+    <h1>Entrar como admin</h1>
+    <p class="sub">Solo para publicar o quitar afiches de la Bolsa de la iglesia.</p>
+    <form id="form-login">
+      <label class="field"><span>Contraseña</span>
+        <input class="input" id="pass" type="password" autocomplete="current-password" required>
+      </label>
+      <button class="btn" type="submit" id="btn-login">Entrar</button>
+      <div class="msg error" id="login-msg" hidden></div>
+    </form>
+  </section>
+
+  <!-- Panel -->
+  <div id="panel" hidden>
+    <section class="card">
+      <h2>Publicar un afiche</h2>
+      <p class="sub">Subí la imagen tal como te la mandaron. La reducimos sola para que cargue rápido.</p>
+      <form id="form-afiche">
+        <label class="drop" id="drop">
+          <input type="file" id="archivo" accept="image/*" aria-label="Elegir imagen del afiche">
+          <div id="drop-vacio">
+            <div class="icon-chip" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E7C86" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-8 8"/></svg>
+            </div>
+            <strong>Tocá para elegir o tomar la foto</strong>
+            <small>JPG o PNG · en la PC también podés arrastrarla aquí</small>
+          </div>
+          <img id="preview" alt="Vista previa del afiche" hidden>
+        </label>
+        <div class="row">
+          <label class="field"><span>Puesto</span>
+            <input class="input" id="puesto" maxlength="80" placeholder="Ej. Ayudante de cocina" required>
+          </label>
+          <label class="field"><span>Provincia</span>
+            <select class="select" id="provincia" required>
+              <option value="">Elegí…</option>
+              <option>San José</option><option>Alajuela</option><option>Cartago</option><option>Heredia</option>
+              <option>Guanacaste</option><option>Puntarenas</option><option>Limón</option>
+            </select>
+          </label>
+        </div>
+        <button class="btn" type="submit" id="btn-publicar">Publicar afiche</button>
+        <div class="msg" id="pub-msg" hidden></div>
+      </form>
+    </section>
+
+    <div class="list-head"><strong id="total">0</strong><span id="total-txt">afiches publicados</span></div>
+    <div class="grid" id="lista"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var CLAVE = 'pl-admin';
+  var pass = sessionStorage.getItem(CLAVE) || '';
+  var imagenLista = null; // dataURL reducido
+
+  // ---------- Sesión ----------
+  function api(method, body) {
+    return fetch('/api/afiches' + (method === 'GET' ? '?t=' + Date.now() : ''), {
+      method: method,
+      headers: Object.assign({ 'x-admin-password': pass }, body ? { 'Content-Type': 'application/json' } : {}),
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        if (!r.ok) { var e = new Error(d.mensaje || 'Error ' + r.status); e.status = r.status; throw e; }
+        return d;
+      });
+    });
+  }
+
+  function entrar() {
+    $('login').hidden = true; $('panel').hidden = false; $('salir').hidden = false;
+    cargarLista();
+  }
+  function salir() {
+    sessionStorage.removeItem(CLAVE); pass = '';
+    $('panel').hidden = true; $('salir').hidden = true; $('login').hidden = false;
+    $('pass').value = ''; $('pass').focus();
+  }
+  $('salir').addEventListener('click', salir);
+
+  $('form-login').addEventListener('submit', function (e) {
+    e.preventDefault();
+    pass = $('pass').value;
+    $('btn-login').disabled = true; $('login-msg').hidden = true;
+    api('POST', { accion: 'verificar' })
+      .then(function () { sessionStorage.setItem(CLAVE, pass); entrar(); })
+      .catch(function (err) {
+        $('login-msg').textContent = err.status === 401 ? 'Contraseña incorrecta.' : err.message;
+        $('login-msg').hidden = false;
+      })
+      .finally(function () { $('btn-login').disabled = false; });
+  });
+
+  if (pass) api('POST', { accion: 'verificar' }).then(entrar).catch(salir);
+
+  // ---------- Imagen ----------
+  var drop = $('drop');
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function () { drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function (e) {
+    e.preventDefault();
+    if (e.dataTransfer.files[0]) prepararImagen(e.dataTransfer.files[0]);
+  });
+  $('archivo').addEventListener('change', function () { if (this.files[0]) prepararImagen(this.files[0]); });
+
+  function prepararImagen(file) {
+    if (!/^image\//.test(file.type)) return mensaje('Ese archivo no es una imagen.', true);
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function () {
+      var max = 1600, w = img.naturalWidth, h = img.naturalHeight;
+      var escala = Math.min(1, max / Math.max(w, h));
+      var c = document.createElement('canvas');
+      c.width = Math.round(w * escala); c.height = Math.round(h * escala);
+      var ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); // fondo blanco para PNG transparentes
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      var calidad = 0.82, data = c.toDataURL('image/jpeg', calidad);
+      while (data.length > 2.6 * 1024 * 1024 && calidad > 0.5) { calidad -= 0.1; data = c.toDataURL('image/jpeg', calidad); }
+      imagenLista = data;
+      $('preview').src = data; $('preview').hidden = false;
+      $('drop-vacio').hidden = true; drop.classList.add('has-img');
+      URL.revokeObjectURL(url);
+      $('pub-msg').hidden = true;
+    };
+    img.onerror = function () { mensaje('No pudimos leer esa imagen. Probá con otra (JPG o PNG).', true); };
+    img.src = url;
+  }
+
+  // ---------- Publicar ----------
+  $('form-afiche').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!imagenLista) return mensaje('Primero elegí la imagen del afiche.', true);
+    var btn = $('btn-publicar');
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Publicando…';
+    api('POST', { imagen: imagenLista, puesto: $('puesto').value, provincia: $('provincia').value })
+      .then(function () {
+        mensaje('¡Publicado! Ya aparece en la Bolsa de la iglesia (puede tardar hasta un minuto).', false);
+        $('form-afiche').reset(); imagenLista = null;
+        $('preview').hidden = true; $('drop-vacio').hidden = false; drop.classList.remove('has-img');
+        cargarLista();
+      })
+      .catch(function (err) { if (err.status === 401) return salir(); mensaje(err.message, true); })
+      .finally(function () { btn.disabled = false; btn.textContent = 'Publicar afiche'; });
+  });
+
+  function mensaje(t, esError) {
+    var m = $('pub-msg');
+    m.textContent = t; m.className = 'msg ' + (esError ? 'error' : 'ok'); m.hidden = false;
+  }
+
+  // ---------- Lista ----------
+  function cargarLista() {
+    api('GET').then(function (d) {
+      var lista = $('lista');
+      lista.innerHTML = '';
+      $('total').textContent = d.total;
+      $('total-txt').textContent = d.total === 1 ? 'afiche publicado' : 'afiches publicados';
+      if (!d.afiches.length) {
+        lista.innerHTML = '<div class="empty">Todavía no publicaste ningún afiche.</div>';
+        return;
+      }
+      d.afiches.forEach(function (a, i) {
+        var item = document.createElement('article'); item.className = 'item';
+        item.style.animationDelay = Math.min(i, 8) * 50 + 'ms';
+        var img = new Image(); img.loading = 'lazy'; img.alt = ''; img.src = a.url;
+        var body = document.createElement('div'); body.className = 'body';
+        var h3 = document.createElement('h3'); h3.textContent = a.puesto;
+        var sm = document.createElement('small'); sm.textContent = a.provincia + ' · ' + new Date(a.fecha).toLocaleDateString('es-CR', { day: 'numeric', month: 'short' });
+        var q = document.createElement('button'); q.type = 'button'; q.className = 'btn-quitar'; q.textContent = 'Quitar';
+        q.addEventListener('click', function () {
+          if (!confirm('¿Quitar el afiche “' + a.puesto + '”? Esta acción no se puede deshacer.')) return;
+          q.disabled = true; q.textContent = 'Quitando…';
+          api('DELETE', { url: a.url }).then(cargarLista).catch(function (err) {
+            if (err.status === 401) return salir();
+            alert(err.message); q.disabled = false; q.textContent = 'Quitar';
+          });
+        });
+        body.append(h3, sm, q);
+        item.append(img, body);
+        lista.appendChild(item);
+      });
+    }).catch(function (err) {
+      $('lista').innerHTML = '<div class="empty"></div>';
+      $('lista').firstChild.textContent = err.message;
+    });
+  }
+})();
+</script>
+</body>
+</html>
