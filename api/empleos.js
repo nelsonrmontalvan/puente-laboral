@@ -63,7 +63,7 @@ async function buscarJSearch({ key, q, provincia, remoto, cursor }) {
   if (cursor) params.set('cursor', cursor);
   if (remoto) params.set('work_from_home', 'true');
 
-  const data = await llamar(`https://jsearch.p.rapidapi.com/search?${params}`, key, 'jsearch.p.rapidapi.com');
+  const data = await llamar(`https://jsearch.p.rapidapi.com/search-v2?${params}`, key, 'jsearch.p.rapidapi.com');
   // Compatibilidad: v5 trae data.jobs; versiones viejas traían data como arreglo
   const lista = Array.isArray(data?.data?.jobs) ? data.data.jobs
               : Array.isArray(data?.data) ? data.data : [];
