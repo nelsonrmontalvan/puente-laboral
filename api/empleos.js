@@ -1,11 +1,11 @@
-// /api/empleos — Función serverless (Vercel) que consulta la API de empleos.
+// /api/empleos â€” FunciÃ³n serverless (Vercel) que consulta la API de empleos.
 // La llave vive en la variable de entorno RAPIDAPI_KEY: nunca llega al navegador.
 //
 // Proveedores soportados (variable PROVEEDOR):
 //   "jsearch"  -> JSearch (agrega LinkedIn, Indeed, Glassdoor y otros)  [por defecto]
 //   "linkedin" -> LinkedIn Job Search API (solo LinkedIn)
 
-const PROVINCIAS = ['San José', 'Alajuela', 'Cartago', 'Heredia', 'Guanacaste', 'Puntarenas', 'Limón'];
+const PROVINCIAS = ['San JosÃ©', 'Alajuela', 'Cartago', 'Heredia', 'Guanacaste', 'Puntarenas', 'LimÃ³n'];
 
 module.exports = async (req, res) => {
   const key = process.env.RAPIDAPI_KEY;
@@ -19,18 +19,18 @@ module.exports = async (req, res) => {
   const q = String(req.query.q || '').trim().slice(0, 80);
   const provincia = PROVINCIAS.includes(req.query.provincia) ? req.query.provincia : '';
   const remoto = req.query.remoto === '1';
-  // "cursor" = token de la siguiente página (JSearch v5 usa cursor; LinkedIn usa un número)
+  // "cursor" = token de la siguiente pÃ¡gina (JSearch v5 usa cursor; LinkedIn usa un nÃºmero)
   const cursor = String(req.query.cursor || '').slice(0, 2000);
   const debug = req.query.debug === '1';
 
-  if (!q) return res.status(400).json({ error: 'SIN_BUSQUEDA', mensaje: 'Escribí qué trabajo buscás.' });
+  if (!q) return res.status(400).json({ error: 'SIN_BUSQUEDA', mensaje: 'EscribÃ­ quÃ© trabajo buscÃ¡s.' });
 
   try {
     const resultado = proveedor === 'linkedin'
       ? await buscarLinkedIn({ key, q, provincia, remoto, cursor })
       : await buscarJSearch({ key, q, provincia, remoto, cursor });
 
-    // Caché en el CDN de Vercel: búsquedas iguales no gastan cuota de la API por 30 min.
+    // CachÃ© en el CDN de Vercel: bÃºsquedas iguales no gastan cuota de la API por 30 min.
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=86400');
 
     return res.status(200).json({
@@ -42,9 +42,9 @@ module.exports = async (req, res) => {
     });
   } catch (err) {
     const status = err.status || 500;
-    let mensaje = 'No pudimos conectar con el servicio de empleos. Probá de nuevo en un momento.';
-    if (status === 401 || status === 403) mensaje = 'La llave no es válida o la cuenta no está suscrita a esta API en RapidAPI.';
-    if (status === 429) mensaje = 'Se alcanzó el límite de consultas del plan. Intentá más tarde.';
+    let mensaje = 'No pudimos conectar con el servicio de empleos. ProbÃ¡ de nuevo en un momento.';
+    if (status === 401 || status === 403) mensaje = 'La llave no es vÃ¡lida o la cuenta no estÃ¡ suscrita a esta API en RapidAPI.';
+    if (status === 429) mensaje = 'Se alcanzÃ³ el lÃ­mite de consultas del plan. IntentÃ¡ mÃ¡s tarde.';
     console.error('[empleos]', status, err.message);
     return res.status(status >= 400 && status < 600 ? status : 500).json({ error: 'API_EXTERNA', mensaje });
   }
@@ -64,7 +64,7 @@ async function buscarJSearch({ key, q, provincia, remoto, cursor }) {
   if (remoto) params.set('work_from_home', 'true');
 
   const data = await llamar(`https://jsearch.p.rapidapi.com/search-v2?${params}`, key, 'jsearch.p.rapidapi.com');
-  // Compatibilidad: v5 trae data.jobs; versiones viejas traían data como arreglo
+  // Compatibilidad: v5 trae data.jobs; versiones viejas traÃ­an data como arreglo
   const lista = Array.isArray(data?.data?.jobs) ? data.data.jobs
               : Array.isArray(data?.data) ? data.data : [];
   const siguiente = (data?.data && !Array.isArray(data.data) && data.data.cursor) || null;
@@ -118,7 +118,7 @@ async function buscarLinkedIn({ key, q, provincia, remoto, cursor }) {
     };
   }).filter(e => e.url && e.titulo);
 
-  // Esta API no filtra por provincia ni remoto de forma directa: filtramos aquí.
+  // Esta API no filtra por provincia ni remoto de forma directa: filtramos aquÃ­.
   if (provincia) {
     const p = quitarTildes(provincia);
     empleos = empleos.filter(e => quitarTildes(e.ubicacion).includes(p));
@@ -145,7 +145,7 @@ function traducirTipo(t) {
     FULLTIME: 'Tiempo completo', FULL_TIME: 'Tiempo completo',
     PARTTIME: 'Medio tiempo', PART_TIME: 'Medio tiempo',
     CONTRACTOR: 'Por contrato', CONTRACT: 'Por contrato',
-    INTERN: 'Pasantía', INTERNSHIP: 'Pasantía',
+    INTERN: 'PasantÃ­a', INTERNSHIP: 'PasantÃ­a',
     TEMPORARY: 'Temporal'
   };
   return mapa[String(t).toUpperCase().replace(/\s|-/g, '_')] || null;
