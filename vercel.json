@@ -1,5 +1,11 @@
 {
+  "cleanUrls": true,
   "functions": {
-    "api/empleos.js": { "maxDuration": 60 }
+    "api/empleos.js": {
+      "maxDuration": 60
+    },
+    "api/afiches.js": {
+      "maxDuration": 30
+    }
   }
 }
