@@ -75,6 +75,18 @@
     border: 28px solid rgba(255,255,255,.07);
     pointer-events: none;
   }
+  .free-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(255,255,255,.14); color: #fff;
+    font-size: 13px; font-weight: 600;
+    padding: 6px 12px; border-radius: var(--radius-pill);
+    margin-bottom: 14px; position: relative; z-index: 1;
+  }
+  .site-footer {
+    text-align: center; font-size: 13px; color: var(--text-secondary);
+    padding: 4px 0 calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+  .site-footer strong { color: var(--text-primary); font-weight: 700; }
   .search-card h1 { font-size: clamp(24px, 6vw, 34px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; max-width: 20ch; }
   .search-card p.lead { margin-top: 6px; font-size: 14.5px; opacity: .85; max-width: 46ch; }
 
@@ -207,7 +219,7 @@
   .btn-ghost:hover { box-shadow: var(--shadow-card); transform: translateY(-1px); }
 
   footer.note {
-    margin: 28px 0 24px; padding: 14px 16px;
+    margin: 28px 0 16px; padding: 14px 16px;
     display: flex; gap: 10px; align-items: flex-start;
     background: var(--bg-card); border-radius: 16px;
     font-size: 13.5px; color: var(--text-secondary);
@@ -243,6 +255,10 @@
   </header>
 
   <section class="search-card" aria-labelledby="titulo">
+    <div class="free-chip">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.4h2c.7-1.2 2.2-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>
+      Un servicio gratuito para miembros de la iglesia y amigos
+    </div>
     <h1 id="titulo">¿Qué trabajo estás buscando?</h1>
     <p class="lead">Buscamos ofertas reales en todo el país. Tocá la que te interese y aplicás directo en el anuncio.</p>
     <form class="search" id="form" role="search">
@@ -270,6 +286,10 @@
   <footer class="note">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E7C86" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M12 3 4 6v6c0 4.5 3.4 8.4 8 9 4.6-.6 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>
     <span><b>Cuidate de las estafas.</b> Ninguna empresa seria cobra por darte un trabajo, una entrevista o una capacitación. Si te piden dinero o datos bancarios, no sigas.</span>
+  </footer>
+
+  <footer class="site-footer">
+    Desarrollado por <strong>Ing. Nelson Rodríguez</strong> · © 2026 · Todos los derechos reservados
   </footer>
 </div>
 
@@ -417,7 +437,7 @@
 
     var place = document.createElement('div'); place.className = 'place';
     place.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
-    place.append(document.createTextNode(job.ubicacion || 'Costa Rica'));
+    place.append(document.createTextNode(limpiarUbicacion(job.ubicacion)));
 
     var tags = document.createElement('div'); tags.className = 'tags';
     var hace = haceCuanto(job.fecha);
@@ -492,6 +512,12 @@
     if (!n) return '?';
     var p = String(n).trim().split(/\s+/);
     return (p[0][0] + (p[1] ? p[1][0] : '')).toUpperCase();
+  }
+  function limpiarUbicacion(u) {
+    var t = String(u || '').split(/\s*[•·]\s*(a través de|via|vía)\b/i)[0].trim();
+    // JSearch a veces confunde "San José" (CR) con San José, California
+    t = t.replace(/,\s*(California|CA|Texas|Florida)$/i, ', Costa Rica');
+    return t || 'Costa Rica';
   }
   function capital(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   function haceCuanto(fecha) {
