@@ -87,6 +87,13 @@
     padding: 4px 0 calc(28px + env(safe-area-inset-bottom, 0px));
   }
   .site-footer strong { color: var(--text-primary); font-weight: 700; }
+  .admin-link {
+    display: inline-flex; align-items: center; gap: 4px; margin-top: 10px;
+    color: var(--text-tertiary); font-size: 12px; font-weight: 600; text-decoration: none;
+    padding: 4px 10px; border-radius: 999px; transition: color .2s ease, background .2s ease;
+  }
+  .admin-link:hover { color: var(--text-secondary); background: #E4E8E5; }
+  .site-footer .admin-link { display: flex; width: max-content; margin-inline: auto; }
   .search-card h1 { font-size: clamp(24px, 6vw, 34px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; max-width: 20ch; }
   .search-card p.lead { margin-top: 6px; font-size: 14.5px; opacity: .85; max-width: 46ch; }
 
@@ -388,6 +395,10 @@
 
   <footer class="site-footer">
     Desarrollado por <strong>Ing. Nelson Rodríguez</strong> · © 2026 · Todos los derechos reservados
+    <a class="admin-link" href="/admin" rel="nofollow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      Admin
+    </a>
   </footer>
 </div>
 
